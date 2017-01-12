@@ -1,6 +1,6 @@
 webpackJsonp([0,1],[
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	'use strict';
 	
@@ -8,9 +8,16 @@ webpackJsonp([0,1],[
 	
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 	
-	var _var = __webpack_require__(1);
-	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	console.log('Start');
+	
+	var NODE_TYPE = {
+	    element: 1,
+	    text: 3,
+	    comment: 8
+	};
+	var DIRECTIVES = ['bind'];
 	
 	var vm = {
 	    data: {
@@ -19,6 +26,8 @@ webpackJsonp([0,1],[
 	        content: 'content'
 	    }
 	};
+	
+	observe(vm.data);
 	
 	vm.data.test = 'notest';
 	vm.data.test2 = 'hhh';
@@ -36,22 +45,15 @@ webpackJsonp([0,1],[
 	function defineReactive(data, key, val) {
 	    observe(val);
 	
-	    var dep = new Dep();
-	
 	    Object.defineProperty(data, key, {
 	        enumerable: true,
 	        configurable: false,
 	        get: function get() {
-	            if (Dep.target) {
-	                dep.addSub(Dep.target);
-	            }
 	            return val;
 	        },
 	        set: function set(newVal) {
 	            console.log('value changed', val, newVal);
 	            val = newVal;
-	
-	            dep.notify();
 	        }
 	    });
 	}
@@ -61,21 +63,17 @@ webpackJsonp([0,1],[
 	        _classCallCheck(this, Dep);
 	
 	        this.subs = [];
-	        this.target = null;
 	    }
 	
 	    _createClass(Dep, [{
 	        key: 'addSub',
 	        value: function addSub(sub) {
-	            console.log('sub:', this.subs);
 	            this.subs.push(sub);
 	        }
 	    }, {
 	        key: 'notify',
 	        value: function notify() {
-	            console.log('notify');
 	            this.subs.forEach(function (sub) {
-	                console.log(sub);
 	                sub.update();
 	            });
 	        }
@@ -84,81 +82,42 @@ webpackJsonp([0,1],[
 	    return Dep;
 	}();
 	
-	Dep.target = null;
-	
-	var Watcher = function () {
-	    function Watcher(vm, node, name) {
-	        _classCallCheck(this, Watcher);
-	
-	        Dep.target = this;
-	
-	        this.vm = vm;
-	        this.node = node;
-	        this.name = name;
-	        this.update();
-	        Dep.target = null;
-	    }
-	
-	    _createClass(Watcher, [{
-	        key: 'update',
-	        value: function update() {
-	            this.get();
-	            this.node.nodeValue ? this.node.nodeValue = this.value : this.node.value = this.value;
-	        }
-	    }, {
-	        key: 'get',
-	        value: function get() {
-	            this.value = this.vm.data[this.name];
-	        }
-	    }]);
-	
-	    return Watcher;
-	}();
-	
 	function compile(node, vm) {
 	    var regMoustache = /\{\{(.*?)\}\}/;
 	    var regDirectives = /g-([\s\S]+)/;
 	    var nodeType = node.nodeType;
 	
-	    if (nodeType == _var.NODE_TYPE.element) {
+	    if (nodeType == NODE_TYPE.element) {
 	        var attrs = node.attributes;
 	
 	        Array.from(attrs, function (attr) {
 	            var nodeName = attr.nodeName;
 	
-	            if (!regDirectives.test(nodeName)) {
-	                return;
-	            }
+	            if (regDirectives.test(nodeName)) {
+	                var directives = RegExp.$1;
 	
-	            var directives = RegExp.$1;
+	                if (directives === 'bind') {
+	                    (function () {
+	                        var valueName = attr.nodeValue;
+	                        node.value = vm.data[valueName];
+	                        node.removeAttribute(nodeName);
 	
-	            if (directives === 'bind') {
-	                (function () {
-	                    var name = attr.nodeValue;
-	                    node.value = vm.data[name];
-	                    node.removeAttribute(nodeName);
+	                        node.addEventListener('input', function (e) {
+	                            vm.data[valueName] = e.target.value;
 	
-	                    node.addEventListener('input', function (e) {
-	                        vm.data[name] = e.target.value;
-	
-	                        console.log(vm);
-	                    });
-	
-	                    new Watcher(vm, node, name);
-	                })();
+	                            console.log(vm);
+	                        });
+	                    })();
+	                }
 	            }
 	        });
 	    }
 	
-	    if (nodeType == _var.NODE_TYPE.text) {
-	        if (!regMoustache.test(node.nodeValue)) {
-	            return;
+	    if (nodeType == NODE_TYPE.text) {
+	        if (regMoustache.test(node.nodeValue)) {
+	            var value = RegExp.$1.trim();
+	            node.nodeValue = vm.data[value];
 	        }
-	
-	        var name = RegExp.$1.trim();
-	
-	
-	        new Watcher(vm, node, name);
 	    }
 	}
 	
@@ -174,32 +133,10 @@ webpackJsonp([0,1],[
 	    return fragment;
 	}
 	
-	observe(vm);
 	var wrap = document.querySelector('.wrap');
 	var node = node2fragment(wrap);
 	console.log(node);
 	wrap.appendChild(node);
-	
-	document.querySelector('input[value=change]').addEventListener('click', function () {
-	    vm.data.content = 'change';
-	});
-
-/***/ },
-/* 1 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	var NODE_TYPE = exports.NODE_TYPE = {
-	    element: 1,
-	    text: 3,
-	    comment: 8
-	};
-	
-	var DIRECTIVES = exports.DIRECTIVES = ['bind'];
 
 /***/ }
 ]);

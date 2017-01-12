@@ -5,7 +5,8 @@
   "main": ".eslintrc.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack-dev-server --devtool eval --progress --colors --hot --content-base"
+    "dev": "webpack-dev-server --devtool eval --progress --colors --hot --content-base",
+    "build": "webpack && mkdir docs > /dev/null 2>&1 && cp -r ./dist/* ./docs"
   },
   "author": "",
   "license": "ISC",
