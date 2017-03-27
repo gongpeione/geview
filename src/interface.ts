@@ -3,5 +3,6 @@
  */
 export interface GeviewOptions {
     el?: string | Element,
-    _isComponent?: boolean
+    _isComponent?: boolean,
+    data?: any
 }

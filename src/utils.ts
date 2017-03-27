@@ -35,3 +35,41 @@ export function merge (options, defaultOptions): Object {
 
     return options;
 }
+
+export function proxy (target, source) {
+    const keys = Object.keys(source);
+    keys.forEach(key => {
+        let targetKey = key;
+        if (target.hasOwnProperty(key)) {
+            targetKey += '_var';
+        }
+        defProp(target, targetKey, {
+            get: function () {
+                return source[key];
+            },
+            set: function (newVal) {
+                source[key] = newVal;
+            }
+        })
+    });
+}
+
+export function emptyFun (): void {}
+
+interface descriptor {
+    enumerable?: boolean,
+    configurable?: boolean,
+    get?: any,
+    set?: any
+}
+export function defProp (obj, key: string, descriptor: descriptor) {
+    const getter = descriptor.get || emptyFun();
+    const setter = descriptor.set || emptyFun();
+
+    Object.defineProperty(obj, key, {
+        enumerable: !!descriptor.enumerable,
+        configurable: !!descriptor.configurable,
+        get: getter,
+        set: setter
+    })
+}

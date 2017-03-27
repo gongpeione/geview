@@ -1,8 +1,9 @@
 /**
  * Created by geeku on 27/03/2017.
  */
-import {merge, toElement, warn} from "./utils";
+import {merge, proxy, toElement, warn} from "./utils";
 import {GeviewOptions} from "./interface";
+import {Observer} from "./Observer";
 
 const defaultOptions = {
     _isComponent: false,
@@ -11,6 +12,7 @@ const defaultOptions = {
 class Geview {
     public el: Element;
     public $options: GeviewOptions;
+    public $data: any;
     constructor (options: GeviewOptions) {
         if (!(this instanceof Geview)) {
             return new Geview(options);
@@ -24,6 +26,9 @@ class Geview {
         if (el && !isComponent) {
             this.el = toElement(el);
         }
+        new Observer(this.$options.data);
+
+        proxy(this, this.$options.data);
     }
 
     static component (name: string, options: GeviewOptions) {
