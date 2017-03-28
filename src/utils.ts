@@ -65,11 +65,18 @@ interface descriptor {
 export function defProp (obj, key: string, descriptor: descriptor) {
     const getter = descriptor.get || emptyFun();
     const setter = descriptor.set || emptyFun();
-
+    const enume = descriptor.enumerable;
+    const config = descriptor.configurable;
     Object.defineProperty(obj, key, {
-        enumerable: !!descriptor.enumerable,
-        configurable: !!descriptor.configurable,
+        enumerable: enume === undefined ? true : !!enume,
+        configurable: config === undefined ? true : !!config,
         get: getter,
         set: setter
     })
+}
+
+export function randomString (length = 5) {
+    const charList = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const charListLength = charList.length;
+    return Array.from(new Array(length)).map(_ => charList[~~(Math.random() * charListLength)]).join('');
 }

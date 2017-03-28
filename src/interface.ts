@@ -4,5 +4,7 @@
 export interface GeviewOptions {
     el?: string | Element,
     _isComponent?: boolean,
-    data?: any
+    data?: any,
+    computed?,
+    name?: string
 }

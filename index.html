@@ -31,8 +31,19 @@
             		b: 'b',
                     c: {
             			d: 'd'
-                    }
+                    },
+                    d: [1,2,3,4,5, {dd: 1}]
                 }
+            },
+            computed: {
+            	getContent: function () {
+                    return this.content;
+	            }
+            }
+        });
+        window.child = Geview.component(null, {
+        	data: {
+        		com: 1
             }
         });
     </script>
