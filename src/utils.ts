@@ -80,3 +80,114 @@ export function randomString (length = 5) {
     const charListLength = charList.length;
     return Array.from(new Array(length)).map(_ => charList[~~(Math.random() * charListLength)]).join('');
 }
+
+const key = {
+    "0": 48,
+    "1": 49,
+    "2": 50,
+    "3": 51,
+    "4": 52,
+    "5": 53,
+    "6": 54,
+    "7": 55,
+    "8": 56,
+    "9": 57,
+    "UP": 38,
+    "DOWN": 40,
+    "LEFT": 37,
+    "RIGHT": 39,
+    "BACKSPACE": 8,
+    "TAB": 9,
+    "ENTER": 13,
+    "SHIFT": 16,
+    "CTRL": 17,
+    "ALT": 18,
+    "SPACE": 32,
+    "DELETE": 46,
+    "a": 97,
+    "b": 98,
+    "c": 99,
+    "d": 100,
+    "e": 101,
+    "f": 102,
+    "g": 103,
+    "h": 104,
+    "i": 105,
+    "j": 106,
+    "k": 107,
+    "l": 108,
+    "m": 109,
+    "n": 110,
+    "o": 111,
+    "p": 112,
+    "q": 113,
+    "r": 114,
+    "s": 115,
+    "t": 116,
+    "u": 117,
+    "v": 118,
+    "w": 119,
+    "x": 120,
+    "y": 121,
+    "z": 122,
+    "A": 65,
+    "B": 66,
+    "C": 67,
+    "D": 68,
+    "E": 69,
+    "F": 70,
+    "G": 71,
+    "H": 72,
+    "I": 73,
+    "J": 74,
+    "K": 75,
+    "L": 76,
+    "M": 77,
+    "N": 78,
+    "O": 79,
+    "P": 80,
+    "Q": 81,
+    "R": 82,
+    "S": 83,
+    "T": 84,
+    "U": 85,
+    "V": 86,
+    "W": 87,
+    "X": 88,
+    "Y": 89,
+    "Z": 90,
+    "F1": 112,
+    "F2": 113,
+    "F3": 114,
+    "F4": 115,
+    "F5": 116,
+    "F6": 117,
+    "F7": 118,
+    "F8": 119,
+    "F9": 120,
+    "F10": 121,
+    "F11": 122,
+    "F12": 123
+};
+// Array.from(letters, letter => {
+//     key[letter] = letter.charCodeAt(0);
+// });
+// Array(12).fill().forEach((val, index) => {
+//     key['F' + (index + 1)] = F1_KEYCODE + index;
+// });
+export const CONST = {
+    USE_CAPTURE: {
+        BUBBLING: false,
+        CAPTURE: true
+    },
+    KEY_CODE: key,
+    NODE_TYPE: {
+        element: 1,
+        text: 3,
+        comment: 8
+    }
+};
+
+export const regex = {
+    text: /{{\s*(.*?)\s*}}/
+}

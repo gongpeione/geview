@@ -6,19 +6,22 @@ import {defProp, emptyFun, merge, proxy, randomString, toElement, warn} from "./
 import {GeviewOptions} from "./interface";
 import {Observer} from "./Observer";
 import {ComManager} from "./ComManager";
-import {compiler} from "./Compiler";
+import {parser} from "./Parser";
 
 const defaultOptions = {
     _isComponent: false,
     data: {}
 };
 const comManager = new ComManager();
+let uid = 0;
 class Geview {
     public el: Element;
     public $options: GeviewOptions;
     public $data: any;
     public name: string;
     public _isComponent: boolean;
+    public _uid: number;
+    public $comManager: ComManager;
     constructor (options: GeviewOptions) {
         if (!(this instanceof Geview)) {
             return new Geview(options);
@@ -34,6 +37,7 @@ class Geview {
         const isComponent = this.$options._isComponent;
         if (el && !isComponent) {
             this.el = toElement(el);
+            this.$comManager = comManager;
         }
 
         if (this.$options.name) {
@@ -44,6 +48,7 @@ class Geview {
             this._isComponent = true;
         }
 
+        this._uid = uid++;
         // observe data
         new Observer(this.$options.data);
         // proxy data to Geview's instance
@@ -65,11 +70,14 @@ class Geview {
             });
         }
 
-        !this._isComponent && compiler(this.el);
+        this.el && parser.call(this, this.el, this);
     }
 
     static component (name: string, options: GeviewOptions) {
-        name = name ? name : randomString();
+        if (!name) {
+            warn('Component name is required');
+            return;
+        }
         const newCom = new Geview(Object.assign({ _isComponent: true, name: name }, options));
         comManager.addCom(newCom);
 
