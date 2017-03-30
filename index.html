@@ -22,7 +22,7 @@
             <input type="button" value="change">
             {{ inside }}
         </div>
-        {{ a.b }}
+        {{ a.b }} {{ getContent }}
     </div>
 
     <script src="index.js"></script>
@@ -42,7 +42,7 @@
             },
             computed: {
             	getContent: function () {
-                    return this.content;
+                    return '[Content]' + this.content + '///' + this.inside;
 	            }
             }
         });

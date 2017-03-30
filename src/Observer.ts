@@ -44,11 +44,16 @@ export function initPorperty (obj, key, val) {
             return val;
         },
         set: function (newVal) {
+            if (val === newVal) {
+                return;
+            }
             if (isObject(newVal)) {
                 new Observer(newVal);
             }
-            publisher.notify(val, newVal);
+            const oldVal = val;
             val = newVal;
+            publisher.notify(oldVal, newVal);
+            console.log(publisher);
         }
     });
 }

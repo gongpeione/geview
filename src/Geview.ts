@@ -7,6 +7,8 @@ import {GeviewOptions} from "./interface";
 import {Observer} from "./Observer";
 import {ComManager} from "./ComManager";
 import {Parser} from "./Parser";
+import {Watcher, WatcherTarget} from "./Watcher";
+import {Publisher} from "./Publisher";
 
 const defaultOptions = {
     _isComponent: false,
@@ -22,8 +24,6 @@ class Geview {
     public _isComponent: boolean;
     public _uid: number;
     public $comManager: ComManager;
-
-    private _watcherTarget = null;
     constructor (options: GeviewOptions) {
         if (!(this instanceof Geview)) {
             return new Geview(options);
@@ -65,10 +65,10 @@ class Geview {
                     enumerable: true,
                     configurable: true,
                     get: function () {
-                        return computedFun();
+                        return computedFun;
                     },
                     set: emptyFun
-                })
+                });
             });
         }
 

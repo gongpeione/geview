@@ -7,13 +7,20 @@ export class Watcher {
     public vm;
     public exp: string;
     public callback;
+    public value;
+    private _isFunc;
+    private _computedValCache;
     constructor (vm, exp, callback, options?) {
         this.vm = vm;
         this.exp = exp;
         this.callback = callback;
 
         WatcherTarget = this;
-        this._get(this.exp);
+        this.value = this._get(this.exp);
+        if (typeof this.value === 'function') {
+            this._computedValCache = this.value();
+            this._isFunc = true;
+        }
         WatcherTarget = null;
         // if (!options.lazy) {
         //
@@ -25,6 +32,12 @@ export class Watcher {
     }
 
     update (oldVal, newVal) {
-        this.callback(oldVal, newVal);
+        if (this._isFunc) {
+            newVal = this.value();
+            this.callback(this._computedValCache, newVal);
+            this._computedValCache = newVal;
+        } else {
+            this.callback(oldVal, newVal);
+        }
     }
 }
