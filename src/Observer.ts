@@ -53,7 +53,6 @@ export function initPorperty (obj, key, val) {
             const oldVal = val;
             val = newVal;
             publisher.notify(oldVal, newVal);
-            console.log(publisher);
         }
     });
 }

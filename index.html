@@ -18,7 +18,8 @@
     <div class="wrap">
         {{ content }} - {{ a.b }}
         <div class="btns">
-            <input type="text" g-bind="content">
+            <input type="text" :value="content">
+            <input type="text" g-model="inside">
             <input type="button" value="change">
             {{ inside }}
         </div>

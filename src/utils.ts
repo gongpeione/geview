@@ -192,11 +192,25 @@ export const regex = {
     text: /{{\s*(.*?)\s*}}/
 }
 
-export function pathToData (context, path) {
-    const propChain = path.split('.');
+export function pathToData (context, path, newVal?) {
+    const propChain: string[] = path.split('.');
     try {
         if (propChain.length === 1) {
+            if (newVal) {
+                context[propChain[0]] = newVal;
+                return true;
+            }
             return context[propChain[0]];
+        }
+        if (newVal) {
+            let val;
+            propChain.forEach((prop, index) => {
+                if (index < propChain.length - 1) {
+                    val = val[prop];
+                } else {
+                    val[prop] = newVal;
+                }
+            })
         }
         return propChain.reduce((x, y) => {
             return context[x][y];
