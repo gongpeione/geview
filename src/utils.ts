@@ -194,15 +194,16 @@ export const regex = {
 
 export function pathToData (context, path, newVal?) {
     const propChain: string[] = path.split('.');
+    const isSet = newVal !== undefined;
     try {
         if (propChain.length === 1) {
-            if (newVal) {
+            if (isSet) {
                 context[propChain[0]] = newVal;
                 return true;
             }
             return context[propChain[0]];
         }
-        if (newVal) {
+        if (isSet) {
             let val;
             propChain.forEach((prop, index) => {
                 if (index < propChain.length - 1) {

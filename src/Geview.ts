@@ -24,6 +24,7 @@ class Geview {
     public _isComponent: boolean;
     public _uid: number;
     public $comManager: ComManager;
+    public $methods = {};
     constructor (options: GeviewOptions) {
         if (!(this instanceof Geview)) {
             return new Geview(options);
@@ -69,6 +70,14 @@ class Geview {
                     },
                     set: emptyFun
                 });
+            });
+        }
+
+        const methods = this.$options.methods;
+        if (methods) {
+            const keys = Object.keys(methods);
+            keys.forEach(key => {
+                this.$methods[key] = methods[key].bind(this);
             });
         }
 

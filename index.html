@@ -20,7 +20,7 @@
         <div class="btns">
             <input type="text" :value="content">
             <input type="text" g-model="inside">
-            <input type="button" value="change">
+            <input type="button" value="change" @click="change">
             {{ inside }}
         </div>
         {{ a.b }} {{ getContent }}
@@ -44,6 +44,11 @@
             computed: {
             	getContent: function () {
                     return '[Content]' + this.content + '///' + this.inside;
+	            }
+            },
+            methods: {
+            	change: function () {
+                    this.content = 'Changed'
 	            }
             }
         });

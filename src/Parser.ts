@@ -93,9 +93,13 @@ export class Parser {
 
     dirModel (el: HTMLInputElement, dirVal, val) {
         this.dirBind(el, 'value', val);
-        el.addEventListener('input', e => {
+        el.addEventListener('keyup', e => {
             pathToData(this.context, val, el.value);
         });
+    }
+
+    dirOn (el: Element, dirVal, val) {
+        el.addEventListener(dirVal, this.context.$methods[val]);
     }
 
     parseText (node) {

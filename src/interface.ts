@@ -6,5 +6,6 @@ export interface GeviewOptions {
     _isComponent?: boolean,
     data?: any,
     computed?,
-    name?: string
+    name?: string,
+    methods?
 }
