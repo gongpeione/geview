@@ -6,7 +6,7 @@ import {defProp, emptyFun, merge, proxy, randomString, toElement, warn} from "./
 import {GeviewOptions} from "./interface";
 import {Observer} from "./Observer";
 import {ComManager} from "./ComManager";
-import {parser} from "./Parser";
+import {Parser} from "./Parser";
 
 const defaultOptions = {
     _isComponent: false,
@@ -22,6 +22,8 @@ class Geview {
     public _isComponent: boolean;
     public _uid: number;
     public $comManager: ComManager;
+
+    private _watcherTarget = null;
     constructor (options: GeviewOptions) {
         if (!(this instanceof Geview)) {
             return new Geview(options);
@@ -70,7 +72,7 @@ class Geview {
             });
         }
 
-        this.el && parser.call(this, this.el, this);
+        this.el && new Parser(this.el, this);
     }
 
     static component (name: string, options: GeviewOptions) {

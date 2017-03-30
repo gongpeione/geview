@@ -1,50 +1,61 @@
-import {CONST, regex} from "./utils";
+import {CONST, pathToData, regex} from "./utils";
 import {Watcher} from "./Watcher";
 /**
  * Created by geeku on 28/03/2017.
  */
 
-export function parser (el: Element, context) {
-    const fragment = document.createDocumentFragment();
-    let child;
-    console.log(this);
-    while (child = el.firstChild) {
-        parseNode(child, context);
-        fragment.appendChild(child);
-    }
-}
-
-export function parseNode (node: Element, context) {
-    const tag = node.tagName;
-    console.log(node);
-    if (false/*context.comManager.hasCom(tag)*/) {
-        // TODO
-    } else {
-        switch (node.nodeType) {
-            case CONST.NODE_TYPE.element: parseElement(node); break;
-            case CONST.NODE_TYPE.text: parseText(node); break;
+export class Parser {
+    private context;
+    constructor (el: Element, context) {
+        this.context = context;
+        if (!(this instanceof Parser)) {
+            return new Parser(el, context);
         }
-        node.childNodes && Array.from(node.childNodes, parseNode);
+        const fragment = document.createDocumentFragment();
+        let child;
+        // console.log(this);
+        while (child = el.firstChild) {
+            this.parseNode(child);
+            fragment.appendChild(child);
+        }
+        el.appendChild(fragment);
     }
-}
 
-function parseElement (el: Element) {
-    const attrs = Array.from(el.attributes);
-    console.log(attrs);
-}
-
-function parseText (node) {
-    const txt = node.textContent;
-    const txtReg = regex.text;
-    if (!txtReg.test(txt)) {
-        return;
+    parseNode (node: Element) {
+        const tag = node.tagName;
+        // console.log(node);
+        if (false/*context.comManager.hasCom(tag)*/) {
+            // TODO
+        } else {
+            switch (node.nodeType) {
+                case CONST.NODE_TYPE.element: this.parseElement(node); break;
+                case CONST.NODE_TYPE.text: this.parseText(node); break;
+            }
+            node.childNodes && Array.from(node.childNodes, this.parseNode.bind(this));
+        }
     }
-    const exps: [string] = txt.match(new RegExp(txtReg, 'g')).map(match => match.replace(/[{}]/g, '').trim());
 
-    console.log(exps);
-    exps.forEach(exp => {
-        new Watcher(this, exp, (oldVal, newVal) => {
-            node.textContent = node.textContent.replace(oldVal, newVal);
-        });
-    })
+    parseElement (el: Element) {
+        const attrs = Array.from(el.attributes);
+        // console.log(attrs);
+    }
+
+    parseText (node) {
+        const txt = node.textContent;
+        const txtReg = regex.text;
+        if (!txtReg.test(txt)) {
+            return;
+        }
+        // '{{ content }} {{ content2 }}' =>  [['content', '{{ content }}'], ['content2', '{{ content2 }}']]
+        const exps = txt.match(new RegExp(txtReg, 'g')).map(match => [match.replace(/[{}]/g, '').trim(), match]);
+
+        const ctx = this.context;
+        exps.forEach(exp => {
+            // first time replace content
+            node.textContent = node.textContent.replace(exp[1], pathToData(ctx, exp[0]));
+            new Watcher(ctx, exp[0], (oldVal, newVal) => {
+                node.textContent = node.textContent.replace(oldVal, newVal);
+            });
+        })
+    }
 }

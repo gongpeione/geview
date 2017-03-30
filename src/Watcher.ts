@@ -1,7 +1,8 @@
+import {pathToData} from "./utils";
 /**
  * Created by geeku on 28/03/2017.
  */
-
+export let WatcherTarget = null;
 export class Watcher {
     public vm;
     public exp: string;
@@ -11,23 +12,19 @@ export class Watcher {
         this.exp = exp;
         this.callback = callback;
 
+        WatcherTarget = this;
         this._get(this.exp);
+        WatcherTarget = null;
         // if (!options.lazy) {
         //
         // }
     }
 
     _get (exp) {
-        const propChain = exp.split('.');
-        try {
-            if (propChain.length === 1) {
-                return this.vm[propChain[0]];
-            }
-            return propChain.reduce((x, y) => {
-                return this.vm[x][y];
-            });
-        } catch (e) {
-            return '';
-        }
+        return pathToData(this.vm, exp);
+    }
+
+    update (oldVal, newVal) {
+        this.callback(oldVal, newVal);
     }
 }

@@ -11,4 +11,10 @@ export class Publisher {
     addWatcher (watcher: Watcher) {
         this.watcherList.push(watcher);
     }
+
+    notify (oldVal, newVal) {
+        this.watcherList.forEach(watcher => {
+            watcher.update(oldVal, newVal);
+        })
+    }
 }

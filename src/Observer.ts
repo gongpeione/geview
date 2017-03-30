@@ -2,6 +2,8 @@
  * Created by geeku on 27/03/2017.
  */
 import {defProp, isObject, warn} from "./utils";
+import {Publisher} from "./Publisher";
+import {WatcherTarget} from "./Watcher";
 
 export class Observer {
     public data;
@@ -31,16 +33,21 @@ export function initPorperty (obj, key, val) {
     if (isObject(val)) {
         new Observer(val);
     }
+    const publisher = new Publisher();
     defProp(obj, key, {
         enumerable: true,
         configurable: true,
         get: function () {
+            if (WatcherTarget !== null) {
+                publisher.addWatcher(WatcherTarget);
+            }
             return val;
         },
         set: function (newVal) {
             if (isObject(newVal)) {
                 new Observer(newVal);
             }
+            publisher.notify(val, newVal);
             val = newVal;
         }
     });

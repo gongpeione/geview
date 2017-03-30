@@ -16,12 +16,13 @@
 <body>
 
     <div class="wrap">
-        {{ content }} - {{ res }}
+        {{ content }} - {{ a.b }}
         <div class="btns">
             <input type="text" g-bind="content">
             <input type="button" value="change">
             {{ inside }}
         </div>
+        {{ a.b }}
     </div>
 
     <script src="index.js"></script>
@@ -36,7 +37,8 @@
             			d: 'd'
                     },
                     d: [1,2,3,4,5, {dd: 1}]
-                }
+                },
+                inside: 'inside'
             },
             computed: {
             	getContent: function () {
