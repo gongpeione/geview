@@ -24,6 +24,13 @@
             {{ inside }}
         </div>
         {{ a.b }} {{ getContent }}
+        <div class="a" g-html="html"></div>
+        <div class="a" g-if="iff">IIIIIFFFFFF</div>
+        <div class="a" g-else>EEEELLLLSSSSEEE</div>
+        <div class="a" g-if="iff">IIIIIFFFFFF</div>
+        <div class="a" g-else>EEEELLLLSSSSEEE</div>
+        <div class="a" g-text="text"></div>
+        <div class="a" g-show="show">Show</div>
     </div>
 
     <script src="index.js"></script>
@@ -39,7 +46,11 @@
                     },
                     d: [1,2,3,4,5, {dd: 1}]
                 },
-                inside: 'inside'
+                inside: 'inside',
+                html: '<h2>HTML</h2>',
+	            text: '<h2>HTML</h2>',
+                show: true,
+                iff: true
             },
             computed: {
             	getContent: function () {

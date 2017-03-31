@@ -102,6 +102,75 @@ export class Parser {
         el.addEventListener(dirVal, this.context.$methods[val]);
     }
 
+    dirHtml (el: HTMLElement, dirVal, val) {
+        el.innerHTML = pathToData(this.context, val);
+        new Watcher(this.context, val, (oldVal, newVal) => {
+            el.innerHTML = newVal;
+        });
+    }
+
+    dirText (el: HTMLElement, dirVal, val) {
+        el.innerText = pathToData(this.context, val);
+        new Watcher(this.context, val, (oldVal, newVal) => {
+            el.innerText = newVal;
+        });
+    }
+
+    dirClass (el: HTMLElement, dirVal, val) {
+        const classList = pathToData(this.context, val);
+        if (typeof classList === 'string') {
+            el.classList.add(classList);
+        } else {
+
+        }
+        new Watcher(this.context, val, (oldVal, newVal) => {
+            el.innerText = newVal;
+        });
+    }
+
+    dirShow (el: HTMLElement, dirVal, val) {
+        const originalDisplay = el.style.display === 'none' ? '' : el.style.display
+        if (!pathToData(this.context, val)) {
+            el.style.display = 'none';
+        }
+        new Watcher(this.context, val, (oldVal, newVal) => {
+            if (!newVal) {
+                el.style.display = 'none';
+            } else {
+                el.style.display = originalDisplay;
+            }
+        });
+    }
+
+    dirIf (el: HTMLElement, dirVal, val) {
+        let sibling: Element = el.nextElementSibling;
+        const parent = el.parentNode;
+        let elseElement = null;
+        let ifTarget = document.createComment('');
+        if (sibling.hasAttribute(prefix + 'else')) {
+            elseElement = sibling;
+            sibling = sibling.nextElementSibling;
+        }
+        if (!pathToData(this.context, val)) {
+            parent.removeChild(el);
+        } else {
+            if (elseElement) {
+                parent.removeChild(elseElement);
+            }
+        }
+
+        parent.insertBefore(ifTarget, sibling);
+        new Watcher(this.context, val, (oldVal, newVal) => {
+            if (!newVal) {
+                parent.removeChild(el);
+                elseElement && parent.insertBefore(elseElement, ifTarget);
+            } else {
+                elseElement && parent.removeChild(elseElement);
+                parent.insertBefore(el, ifTarget);
+            }
+        });
+    }
+
     parseText (node) {
         const txt = node.textContent;
         const txtReg = regex.text;
